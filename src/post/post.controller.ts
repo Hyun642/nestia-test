@@ -11,6 +11,7 @@ import {
   IErrorResponse,
   IPageRequest,
   IPost,
+  ISuccessResponse,
 } from './Interfaces/IPost.interface';
 import { tags } from 'typia';
 
@@ -59,8 +60,14 @@ export class PostController {
     return this.postService.update(id, input);
   }
 
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.postService.remove(+id);
+  @TypedRoute.Delete(':id')
+  @TypedException<IErrorResponse>({
+    status: 404,
+    description: 'Article not found for deletion',
+  })
+  public async remove(
+    @TypedParam('id') id: string & tags.Format<'uuid'>,
+  ): Promise<ISuccessResponse> {
+    return this.postService.remove(id);
   }
 }

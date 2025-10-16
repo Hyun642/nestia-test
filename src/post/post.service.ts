@@ -1,6 +1,10 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 
-import { IPageRequest, IPost } from './Interfaces/IPost.interface';
+import {
+  IPageRequest,
+  IPost,
+  ISuccessResponse,
+} from './Interfaces/IPost.interface';
 import { PostEntity } from './entities/post.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
@@ -76,7 +80,19 @@ export class PostService {
     return updatedPost;
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} post`;
+  public async remove(
+    id: string & tags.Format<'uuid'>,
+  ): Promise<ISuccessResponse> {
+    const result = await this.postRepository.softDelete(id);
+
+    if (result.affected === 0)
+      throw new NotFoundException(
+        `게시글 ID (${id})를 찾을 수 없거나 이미 삭제되었습니다.`,
+      );
+
+    return {
+      code: '200',
+      message: '삭제 성공',
+    };
   }
 }
