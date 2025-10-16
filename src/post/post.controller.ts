@@ -1,7 +1,18 @@
-import { Controller, Get, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Body, Patch, Param, Delete } from '@nestjs/common';
 import { PostService } from './post.service';
-import { TypedBody, TypedQuery, TypedRoute } from '@nestia/core';
-import { IPageRequest, IPost } from './Interfaces/IPost.interface';
+import {
+  TypedBody,
+  TypedException,
+  TypedParam,
+  TypedQuery,
+  TypedRoute,
+} from '@nestia/core';
+import {
+  IErrorResponse,
+  IPageRequest,
+  IPost,
+} from './Interfaces/IPost.interface';
+import { tags } from 'typia';
 
 @Controller('post')
 export class PostController {
@@ -21,9 +32,19 @@ export class PostController {
     return this.postService.findAll(query);
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.postService.findOne(+id);
+  @TypedRoute.Get(':id')
+  @TypedException<IErrorResponse>({
+    status: 404,
+    description: '게시글 ID를 찾을 수 없음',
+    example: {
+      errorCode: 'POST_NOT_FOUND',
+      message: 'Article ID not found',
+    },
+  })
+  public async findOne(
+    @TypedParam('id') postId: string & tags.Format<'uuid'>,
+  ): Promise<IPost.ISummary> {
+    return this.postService.findOne(postId);
   }
 
   @Patch(':id')

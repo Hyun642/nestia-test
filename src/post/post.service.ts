@@ -4,6 +4,7 @@ import { IPageRequest, IPost } from './Interfaces/IPost.interface';
 import { PostEntity } from './entities/post.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
+import { tags } from 'typia';
 
 @Injectable()
 export class PostService {
@@ -37,8 +38,16 @@ export class PostService {
     return post;
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} post`;
+  public async findOne(
+    postId: string & tags.Format<'uuid'>,
+  ): Promise<IPost.ISummary> {
+    const post = await this.postRepository.findOne({
+      where: {
+        id: postId,
+      },
+    });
+    if (!post) throw new NotFoundException('글을 찾을 수 없습니다');
+    return post;
   }
 
   update(id: number, updatePostDto: any) {
