@@ -1,7 +1,7 @@
 import { Controller, Get, Body, Patch, Param, Delete } from '@nestjs/common';
 import { PostService } from './post.service';
-import { TypedBody, TypedRoute } from '@nestia/core';
-import { IPost } from './Interfaces/IPost.interface';
+import { TypedBody, TypedQuery, TypedRoute } from '@nestia/core';
+import { IPageRequest, IPost } from './Interfaces/IPost.interface';
 
 @Controller('post')
 export class PostController {
@@ -14,9 +14,11 @@ export class PostController {
     return this.postService.create(input);
   }
 
-  @Get()
-  findAll() {
-    return this.postService.findAll();
+  @TypedRoute.Get()
+  public async findAll(
+    @TypedQuery() query: IPageRequest,
+  ): Promise<IPost.ISummary[]> {
+    return this.postService.findAll(query);
   }
 
   @Get(':id')

@@ -1,6 +1,6 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 
-import { IPost } from './Interfaces/IPost.interface';
+import { IPageRequest, IPost } from './Interfaces/IPost.interface';
 import { PostEntity } from './entities/post.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
@@ -23,8 +23,18 @@ export class PostService {
     return savedEntity;
   }
 
-  findAll() {
-    return `This action returns all post`;
+  public async findAll(query: IPageRequest): Promise<IPost.ISummary[]> {
+    const { page, limit } = query;
+    const skip = (page - 1) * limit;
+    const post = await this.postRepository.find({
+      order: {
+        createdAt: 'DESC',
+      },
+      skip,
+      take: limit,
+    });
+    if (!post) throw new NotFoundException('글을 찾을 수 없습니다');
+    return post;
   }
 
   findOne(id: number) {
