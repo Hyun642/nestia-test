@@ -1,11 +1,26 @@
 import { Injectable } from '@nestjs/common';
 
 import { IPost } from './Interfaces/IPost.interface';
+import { PostEntity } from './entities/post.entity';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
 
 @Injectable()
 export class PostService {
-  create(input: IPost.ICreate) {
-    return input;
+  constructor(
+    @InjectRepository(PostEntity)
+    private readonly postRepository: Repository<PostEntity>,
+  ) {}
+
+  public async create(input: IPost.ICreate): Promise<IPost.ISummary> {
+    const { title, content, authorId } = input;
+    const newPost = this.postRepository.create({
+      title: title,
+      content: content,
+      authorId: authorId,
+    });
+    const savedEntity = await this.postRepository.save(newPost);
+    return savedEntity;
   }
 
   findAll() {

@@ -1,12 +1,4 @@
-import {
-  Controller,
-  Get,
-  Post,
-  Body,
-  Patch,
-  Param,
-  Delete,
-} from '@nestjs/common';
+import { Controller, Get, Body, Patch, Param, Delete } from '@nestjs/common';
 import { PostService } from './post.service';
 import { TypedBody, TypedRoute } from '@nestia/core';
 import { IPost } from './Interfaces/IPost.interface';
@@ -16,7 +8,9 @@ export class PostController {
   constructor(private readonly postService: PostService) {}
 
   @TypedRoute.Post()
-  public async create(@TypedBody() input: IPost.ICreate): Promise<any> {
+  public async create(
+    @TypedBody() input: IPost.ICreate,
+  ): Promise<IPost.ISummary> {
     return this.postService.create(input);
   }
 
