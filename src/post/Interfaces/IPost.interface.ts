@@ -17,7 +17,7 @@ export namespace IPost {
 
   export interface IUpdate {
     title: string & tags.MinLength<2> & tags.MaxLength<10>;
-    content?: string;
+    content?: string & tags.MinLength<5>;
   }
 }
 

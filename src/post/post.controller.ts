@@ -47,9 +47,16 @@ export class PostController {
     return this.postService.findOne(postId);
   }
 
-  @Patch(':id')
-  update(@Param('id') id: number, @Body() updatePostDto: any) {
-    return this.postService.update(id, updatePostDto);
+  @TypedRoute.Patch(':id')
+  @TypedException<IErrorResponse>({
+    status: 404,
+    description: '게시글 ID를 찾을 수 없음',
+  })
+  public async update(
+    @TypedParam('id') id: string & tags.Format<'uuid'>,
+    @TypedBody() input: IPost.IUpdate,
+  ): Promise<IPost.ISummary> {
+    return this.postService.update(id, input);
   }
 
   @Delete(':id')

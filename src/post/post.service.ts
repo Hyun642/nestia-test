@@ -50,8 +50,30 @@ export class PostService {
     return post;
   }
 
-  update(id: number, updatePostDto: any) {
-    return `This action updates a #${id} post`;
+  public async update(
+    id: string & tags.Format<'uuid'>,
+    input: IPost.IUpdate,
+  ): Promise<IPost.ISummary> {
+    const { title, content } = input;
+    const post = await this.postRepository.findOne({
+      where: { id },
+    });
+
+    if (!post) throw new NotFoundException('글을 찾을 수 없습니다');
+
+    await this.postRepository.update(id, {
+      title,
+      content,
+    });
+
+    const updatedPost = await this.postRepository.findOne({
+      where: { id },
+    });
+
+    if (!updatedPost) {
+      throw new NotFoundException('수정 후 게시글을 찾을 수 없습니다.');
+    }
+    return updatedPost;
   }
 
   remove(id: number) {
