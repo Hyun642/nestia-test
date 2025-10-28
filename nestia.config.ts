@@ -16,7 +16,7 @@ const NESTIA_CONFIG: INestiaConfig = {
     return app;
   },
   output: 'src/api',
-  distribute: 'packages/api',
+  // distribute: 'packages/api',
   simulate: true,
   e2e: 'test',
   swagger: {
