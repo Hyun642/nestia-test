@@ -8,6 +8,8 @@
   "scripts": {
     "build": "nest build",
     "build:test": "tsc -p tsconfig.json",
+    "build:benchmark": "tsc -p tsconfig.benchmark.json",
+    "benchmark": "npm run build:test && npm run build:benchmark && node dist/benchmark/index.js",
     "test": "npm run build:test && node dist/test/index.js",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
     "start": "nest start",

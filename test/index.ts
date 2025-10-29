@@ -11,7 +11,7 @@ async function main(): Promise<void> {
 
   // 2. 클라이언트 커넥터 준비
   const connection: api.IConnection = {
-    host: 'http://127.0.0.1:3000',
+    host: 'http://127.0.0.1:3002',
   };
 
   // 3. 테스트 실행
